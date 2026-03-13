@@ -1,17 +1,58 @@
 #include "order_book.h"
+#include <iostream>
+#include <string>
 
 int main() {
 
     OrderBook ob;
 
-    Order o1{1, Side::BUY, 100, 10, OrderType::LIMIT};
-    Order o2{2, Side::BUY, 101, 5, OrderType::LIMIT};
-    Order o3{3, Side::SELL, 102, 7, OrderType::LIMIT};
+    std::string command;
 
-    ob.addLimitOrder(o1);
-    ob.addLimitOrder(o2);
-    ob.addLimitOrder(o3);
+    while (true) {
 
-    ob.printBook();
+        std::cout << "\nEnter Command (ADD / PRINT / EXIT): ";
+        std::cin >> command;
 
+        if (command == "ADD") {
+
+            int id;
+            std::string sideStr;
+            double price;
+            int quantity;
+
+            std::cin >> id >> sideStr >> price >> quantity;
+
+            Side side;
+
+            if (sideStr == "BUY")
+                side = Side::BUY;
+            else
+                side = Side::SELL;
+
+            Order order{id, side, price, quantity, OrderType::LIMIT};
+
+            ob.addLimitOrder(order);
+
+        }
+
+        else if (command == "PRINT") {
+
+            ob.printBook();
+
+        }
+
+        else if (command == "EXIT") {
+
+            break;
+
+        }
+
+        else {
+
+            std::cout << "Invalid command\n";
+
+        }
+    }
+
+    return 0;
 }
