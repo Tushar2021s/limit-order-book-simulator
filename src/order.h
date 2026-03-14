@@ -20,5 +20,12 @@ struct Order {
     int quantity;
     OrderType type;
 };
+struct Trade {
+    int buyOrderId;
+    int sellOrderId;
+    double price;
+    int quantity;
+    std::string timestamp;
+};
 
 #endif
