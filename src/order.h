@@ -19,6 +19,7 @@ struct Order {
     double price;
     int quantity;
     OrderType type;
+    long long timestamp; //  nanoseconds since epoch
 };
 struct Trade {
     int buyOrderId;
