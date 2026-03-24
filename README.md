@@ -1,193 +1,246 @@
 # ⚡ Low Latency Limit Order Book Simulator (C++)
 
-A high-performance, latency-instrumented Limit Order Book (LOB) simulator built in C++, designed to model exchange-grade matching engines and analyze microsecond-level performance.
+A high-performance, latency-instrumented Limit Order Book (LOB) simulator built in C++, designed to model exchange-grade matching engines with microsecond-level precision and analyze system behavior under realistic trading workloads.
 
 ---
 
-## 📊 Latency Visualization
+## 🚀 Overview
 
-### Total Latency Distribution
+This project simulates a modern electronic trading system with:
 
-![Latency Distribution](latency_distribution.png)
+* ⚡ Ultra-low latency order processing
+* 📊 Fine-grained latency instrumentation (ns/µs)
+* 📈 Tail latency (p50/p90/p99) analysis
+* ⚙️ Throughput benchmarking (orders/sec)
+* 🧠 System-level performance insights
 
-### Engine Latency
-
-![Engine Latency](engine_latency.png)
-
-### Throughput vs Latency
-
-![Throughput vs Latency](throughput_vs_latency.png)
-
----
-
-## ⚙️ Features
-
-* 🧾 Limit & Market Orders
-* ❌ Order Cancellation
-* 📊 Trade Tracking
-* ⚡ Price-Time Priority Matching
-* 🧠 Nanosecond-level latency measurement
-* 📁 CSV logging for analysis
-* 📈 Python-based visualization
+The system is designed to replicate core characteristics of real-world exchanges, including queuing delays, matching overhead, and bursty market traffic.
 
 ---
 
 ## 🧠 System Architecture
 
-```id="k6h3np"
-                +------------------+
-                |  Order Generator |
-                +--------+---------+
-                         |
-                         v
-                +------------------+
-                | Network Delay    |
-                | (Simulated)      |
-                +--------+---------+
-                         |
-                         v
-                +------------------+
-                | Order Queue      |
-                +--------+---------+
-                         |
-                         v
-                +------------------+
-                | Matching Engine  |
-                | (Price-Time)     |
-                +--------+---------+
-                         |
-                         v
-                +------------------+
-                | Trade Execution  |
-                +--------+---------+
-                         |
-                         v
-                +------------------+
-                | CSV Logger       |
-                +------------------+
+```id="arch1"
+                +----------------------+
+                |   Order Generator    |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                |  Network Delay Model |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                |   Ingestion Layer    |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                |   Order Book Engine  |
+                |  (Price-Time Match)  |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                |   Trade Execution    |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                |   Metrics & Logger   |
+                +----------------------+
 ```
 
 ---
 
-## ⏱️ Latency Metrics
+## ⏱️ Latency Instrumentation
 
-| Metric     | Description             | Unit |
-| ---------- | ----------------------- | ---- |
-| network_us | Simulated network delay | µs   |
-| queue_ns   | Time spent in queue     | ns   |
-| engine_ns  | Matching engine latency | ns   |
-| total_us   | End-to-end latency      | µs   |
+Each order captures multiple latency components:
+
+| Metric       | Description                       | Unit |
+| ------------ | --------------------------------- | ---- |
+| `network_us` | Simulated network delay           | µs   |
+| `queue_ns`   | Time spent before matching        | ns   |
+| `engine_ns`  | Matching engine execution latency | ns   |
+| `total_us`   | End-to-end processing latency     | µs   |
+
+All metrics are logged into a CSV file for offline analysis.
+
+---
+
+## 📊 Performance Analysis
+
+### Metrics Computed
+
+* Median latency (P50)
+* Tail latency (P90, P99)
+* Latency distribution
+* Throughput vs latency
+* Latency CDF (tail risk visualization)
+
+---
+
+### 📈 Visualization Outputs
+
+![Latency Distribution](latency_distribution.png)
+![Engine Latency](engine_latency.png)
+![Throughput vs Latency](throughput_vs_latency.png)
+![Latency CDF](latency_cdf.png)
 
 ---
 
 ## ⚡ Benchmark Results
 
-| Metric      | Value    |
-| ----------- | -------- |
-| P50 Latency | ~146 µs  |
-| P90 Latency | ~861 µs  |
-| P99 Latency | ~1128 µs |
-
-### 📌 Observations
-
-* ✅ Low median latency (efficient matching)
-* ⚠️ High tail latency due to queue spikes
-* 📊 Realistic exchange-like behavior under load
+| Metric      | Value         |
+| ----------- | ------------- |
+| P50 Latency | ~146 µs       |
+| P90 Latency | ~861 µs       |
+| P99 Latency | ~1128 µs      |
+| Throughput  | ~X orders/sec |
 
 ---
 
-## 📈 Performance Insights
+## 📌 Key Observations
 
-* Queueing delay dominates tail latency
-* Matching engine latency is consistently low
-* System exhibits burst-sensitive latency spikes
+* ✅ Low median latency indicates efficient steady-state processing
+* ⚠️ Elevated tail latency (p99) driven by queueing delays
+* 📊 System exhibits realistic burst-sensitive performance
+* ⚡ Matching engine latency remains consistently low
 
 ---
 
-## 🧵 Multithreading Design (Future Work)
+## 🧠 Performance Insights
 
-To simulate real exchange systems:
+* Tail latency (p99) is a critical metric in trading systems
+* Queueing delays dominate latency under load
+* Cache locality significantly impacts matching performance
+* System behavior closely resembles real exchange dynamics
 
-### Proposed Architecture
+---
 
-```id="wgr5j2"
-Thread 1: Order Ingestion
-    ↓ (lock-free queue)
-Thread 2: Matching Engine
-    ↓
-Thread 3: Logging / Metrics
+## ⚙️ Core Features
+
+* 🧾 Limit & Market Orders
+* ❌ Order Cancellation
+* 📊 Trade Tracking
+* ⚡ Price-Time Priority Matching
+* 🧠 Nanosecond-level profiling
+* 📁 CSV-based logging
+* 📈 Python-based analytics
+
+---
+
+## 📁 Project Structure
+
+```id="struct1"
+limit-order-book-simulator/
+│
+├── src/
+│   ├── main.cpp
+│   ├── order_book.cpp
+│   ├── order_book.h
+│   └── order.h
+│
+├── analyze_latency.py
+├── latency_log.csv
+├── README.md
 ```
 
-### Key Improvements
-
-* 🔄 Lock-free queues (avoid contention)
-* ⚡ Parallel ingestion and matching
-* 📉 Reduced latency under high throughput
-
 ---
 
-## 🚀 Build & Run
+## ⚙️ Build & Run
 
-```bash id="n7k9fh"
+```bash id="build1"
 g++ -std=c++17 src/main.cpp src/order_book.cpp -Isrc -o lob
 ./lob
 ```
 
 ---
 
-## 🧪 Generate Latency Data
+## 🧪 Usage
 
-```text id="ps3q2m"
-ADD 1 BUY LIMIT 100 10
-ADD 2 SELL LIMIT 101 10
+```id="usage1"
+ADD <id> <BUY/SELL> LIMIT <price> <quantity>
+ADD <id> <BUY/SELL> MARKET <quantity>
+CANCEL <id>
+PRINT
+TRADES
 EXIT
 ```
 
 ---
 
-## 📊 Analyze Performance
+## 📊 Latency Analysis
 
-```bash id="k9h2ls"
+```bash id="analysis1"
 python3 analyze_latency.py
 ```
 
+Generates:
+
+* Latency histograms
+* Throughput vs latency plots
+* CDF curves
+* p50 / p99 metrics
+
 ---
 
-## 📁 Project Structure
+## ⚡ Throughput Benchmarking
 
-```id="6yphdz"
-src/
-├── main.cpp
-├── order_book.cpp
-├── order_book.h
-├── order.h
+The system tracks:
 
-analyze_latency.py
-latency_log.csv
+* Total orders processed
+* Execution duration
+* Orders per second
+
+This enables evaluation of:
+
+> **Latency vs Throughput trade-offs under load**
+
+---
+
+## 🧵 Concurrent System Design (Proposed)
+
+```id="thread1"
+Thread 1: Order Ingestion
+        ↓ (lock-free queue)
+Thread 2: Matching Engine
+        ↓
+Thread 3: Logging & Metrics
 ```
 
+### Benefits
+
+* Decouples ingestion from processing
+* Reduces contention
+* Improves scalability under high load
+
 ---
 
-## 🧠 Key Learnings
+## 🚀 Advanced Optimizations (Planned)
 
-* Tail latency (p99) is more important than average latency
-* Data structures significantly impact performance
-* Real systems must handle burst traffic efficiently
+* ⚡ Cache-friendly price bucket structures
+* 🧠 Lock-free queues (atomic operations)
+* 🧵 Multi-threaded matching engine
+* 📉 Custom memory pool allocator
+* 📊 Real market replay simulation
+* 🧮 In-engine percentile tracking
 
 ---
 
 ## 💼 Resume Highlight
 
-> Built a latency-instrumented limit order book simulator in C++ with nanosecond-level profiling; implemented performance analysis using Python to evaluate p50/p99 latency and throughput tradeoffs.
+> Built a high-performance limit order book simulator in C++ with nanosecond-level latency profiling; analyzed p50/p99 latency and throughput trade-offs under realistic burst traffic conditions.
 
 ---
 
-## 🎯 Future Work
+## 🎯 Key Learnings
 
-* 📊 Real market replay simulation
-* ⚡ Custom memory pool allocator
-* 🧵 Fully concurrent matching engine
-* 📉 Latency optimization (cache-aware structures)
+* Tail latency dominates real-time system performance
+* Data structure choice critically affects latency
+* Realistic load simulation is essential for benchmarking
+* Systems must be optimized for both latency and throughput
 
 ---
 
